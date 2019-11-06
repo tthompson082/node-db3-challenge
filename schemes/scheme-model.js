@@ -20,7 +20,8 @@ function findById(id) {
     .select('*')
     .from('schemes')
     .where('id', '=', id)
-    .first();
+    .first()
+    .then(scheme => (scheme ? scheme : null));
 }
 
 function findSteps(id) {
@@ -33,7 +34,10 @@ function findSteps(id) {
 }
 
 function add(data) {
-  return db.insert(data).into('schemes');
+  return db
+    .insert(data)
+    .into('schemes')
+    .then(id => findById(id[0]));
 }
 
 function update(changes, id) {
@@ -41,7 +45,8 @@ function update(changes, id) {
     .select('*')
     .from('schemes')
     .where('id', '=', id)
-    .update(changes);
+    .update(changes)
+    .then(updated => findById(id));
 }
 
 function remove(id) {
@@ -49,5 +54,6 @@ function remove(id) {
     .select('*')
     .from('schemes')
     .where('id', '=', id)
-    .del();
+    .del()
+    .then(count => (count > 0 ? count : null));
 }
